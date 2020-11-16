@@ -1,6 +1,6 @@
 const express = require("express");
 const { connectToPwdDb, deleteOne } = require("./lib/database");
-const { getPassword, setPassword } = require("./lib/passwords");
+const { getPassword, setPassword, deletePw } = require("./lib/passwords");
 
 const app = express();
 app.use(express.json());
@@ -33,23 +33,21 @@ app.post("/api/passwords/", async (request, response) => {
     console.error(error);
     response.status(500).send("An unexpected error occured. Try again later");
   }
-  // const encryptedValue = CryptoJS.AES.encrypt(
-  //   value,
-  //   await readMasterPassword()
-  // ).toString();
-  // const collection = await setCollection("passwords");
-  // const newPwObject = {
-  //   name: name,
-  //   value: encryptedValue,
-  // };
-  // await replaceOne(collection, newPwObject);
-  // response.send("You added a new password");
 });
 
 app.delete("/api/passwords/:name", async (request, response) => {
-  const { name } = request.params;
-  await deleteOne(name);
-  response.send("Delete request of password");
+  try {
+    const { name } = request.params;
+    const result = await deletePw(name);
+    console.log(result);
+    if (result.deletedCount === 0) {
+      return response.status(404).send("Password does not exist");
+    }
+    response.send(`${name} password deleted`);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send("An unexpected error occured. Try again later");
+  }
 });
 
 async function run() {
