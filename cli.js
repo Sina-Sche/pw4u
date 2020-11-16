@@ -14,6 +14,7 @@ const {
 const { close, connectToPwdDb } = require("./lib/database");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 const chalk = require("chalk");
+const { connect } = require("mongodb");
 require("dotenv").config();
 
 async function run() {
@@ -26,6 +27,7 @@ async function run() {
   console.log(chalk.blue("Connecting to database...🚀"));
 
   await connectToPwdDb();
+
   const [passwordName, newPasswordValue] = readCommandLineArguments();
   if (!passwordName) {
     const { action } = await askForAction();
