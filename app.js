@@ -14,6 +14,7 @@ const {
 const { close, connectToPwdDb } = require("./lib/database");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 const chalk = require("chalk");
+require("dotenv").config();
 
 async function run() {
   await welcomeUser();
