@@ -1,26 +1,14 @@
 import { useState } from "react";
 import getPasswordbyName from "./api/passwords";
 import "./App.css";
+import useAsync from "./hooks/useAsync";
 
 function App() {
-  const [password, setPassword] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const doFetch = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newPassword = await getPasswordbyName(inputValue);
-      setPassword(newPassword);
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, loading, error, doFetch } = useAsync(() =>
+    getPasswordbyName(inputValue)
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +32,7 @@ function App() {
           required
         />
       </form>
-      <div>{password}</div>
+      <div>{data}</div>
     </div>
   );
 }
